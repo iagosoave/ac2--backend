@@ -1,0 +1,85 @@
+package com.ac2.ac2.services;
+
+
+import com.ac2.ac2.dtos.DadosFuncionarioDTO;
+import com.ac2.ac2.dtos.DadosProjetoDTO;
+import com.ac2.ac2.dtos.FuncionarioDTO;
+import com.ac2.ac2.dtos.SetorDTO;
+import com.ac2.ac2.exceptions.RegraNegocioException;
+import com.ac2.ac2.models.Funcionario;
+import com.ac2.ac2.models.Setor;
+import com.ac2.ac2.repositories.FuncionarioRepository;
+import com.ac2.ac2.repositories.SetorRepository;
+import jakarta.transaction.Transactional;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.stream.Collectors;
+
+
+@Service
+@RequiredArgsConstructor
+public class FuncionarioServiceImpl implements FuncionarioService {
+    
+    private final FuncionarioRepository funcionarioRepository;
+    private final SetorRepository setorRepository;
+    
+    @Override
+    @Transactional
+    public Funcionario adicionar(FuncionarioDTO dto) {
+        if (dto.getNome() == null || dto.getNome().trim().isEmpty()) {
+            throw new RegraNegocioException("Nome do funcionário é obrigatório");
+        }
+        
+        if (dto.getEmail() == null || dto.getEmail().trim().isEmpty()) {
+            throw new RegraNegocioException("Email do funcionário é obrigatório");
+        }
+        
+        if (dto.getSetorId() == null) {
+            throw new RegraNegocioException("Setor é obrigatório");
+        }
+        
+        Setor setor = setorRepository.findById(dto.getSetorId())
+                .orElseThrow(() -> new RegraNegocioException("Setor não encontrado com ID: " + dto.getSetorId()));
+        
+        Funcionario funcionario = new Funcionario();
+        funcionario.setNome(dto.getNome());
+        funcionario.setEmail(dto.getEmail());
+        funcionario.setSetor(setor);
+        
+        return funcionarioRepository.save(funcionario);
+    }
+    
+    @Override
+    public List<DadosProjetoDTO> buscarProjetos(Long idFuncionario) {
+        Funcionario funcionario = funcionarioRepository.findFuncionarioComProjetos(idFuncionario);
+        
+        if (funcionario == null) {
+            throw new RegraNegocioException("Funcionário não encontrado com ID: " + idFuncionario);
+        }
+        
+        return funcionario.getProjetos().stream()
+                .map(p -> DadosProjetoDTO.builder()
+                    .id(p.getId())
+                    .nome(p.getNome())
+                    .descricao(p.getDescricao())
+                    .dataInicio(p.getDataInicio())
+                    .dataFim(p.getDataFim())
+                    .funcionarios(
+                        p.getFuncionarios().stream()
+                            .map(f -> DadosFuncionarioDTO.builder()
+                                .id(f.getId())
+                                .nome(f.getNome())
+                                .email(f.getEmail())
+                                .setor(SetorDTO.builder()
+                                    .id(f.getSetor().getId())
+                                    .nome(f.getSetor().getNome())
+                                    .build())
+                                .build())
+                            .collect(Collectors.toList())
+                    )
+                    .build())
+                .collect(Collectors.toList());
+    }
+}
