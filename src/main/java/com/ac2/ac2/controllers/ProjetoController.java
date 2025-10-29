@@ -3,7 +3,6 @@ package com.ac2.ac2.controllers;
 
 import com.ac2.ac2.dtos.DadosProjetoDTO;
 import com.ac2.ac2.dtos.ProjetoDTO;
-import com.ac2.ac2.models.Projeto;
 import com.ac2.ac2.services.ProjetoService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -23,7 +22,7 @@ public class ProjetoController {
     
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public Projeto adicionar(@RequestBody ProjetoDTO dto) {
+    public DadosProjetoDTO adicionar(@RequestBody ProjetoDTO dto) {
         return projetoService.adicionar(dto);
     }
   

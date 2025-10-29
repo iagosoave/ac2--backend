@@ -27,7 +27,7 @@ public class FuncionarioServiceImpl implements FuncionarioService {
     
     @Override
     @Transactional
-    public Funcionario adicionar(FuncionarioDTO dto) {
+    public FuncionarioDTO adicionar(FuncionarioDTO dto) {
         if (dto.getNome() == null || dto.getNome().trim().isEmpty()) {
             throw new RegraNegocioException("Nome do funcionário é obrigatório");
         }
@@ -48,7 +48,30 @@ public class FuncionarioServiceImpl implements FuncionarioService {
         funcionario.setEmail(dto.getEmail());
         funcionario.setSetor(setor);
         
-        return funcionarioRepository.save(funcionario);
+        Funcionario funcionarioSalvo = funcionarioRepository.save(funcionario);
+        
+        FuncionarioDTO response = new FuncionarioDTO();
+        response.setId(funcionarioSalvo.getId());
+        response.setNome(funcionarioSalvo.getNome());
+        response.setEmail(funcionarioSalvo.getEmail());
+        response.setSetorId(funcionarioSalvo.getSetor().getId());
+        
+        return response;
+    }
+    
+    // NOVO: Implementação do método listarTodos
+    @Override
+    public List<FuncionarioDTO> listarTodos() {
+        return funcionarioRepository.findAll().stream()
+                .map(f -> {
+                    FuncionarioDTO dto = new FuncionarioDTO();
+                    dto.setId(f.getId());
+                    dto.setNome(f.getNome());
+                    dto.setEmail(f.getEmail());
+                    dto.setSetorId(f.getSetor().getId());
+                    return dto;
+                })
+                .collect(Collectors.toList());
     }
     
     @Override

@@ -14,6 +14,7 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -27,7 +28,7 @@ public class ProjetoServiceImpl implements ProjetoService {
     
     @Override
     @Transactional
-    public Projeto adicionar(ProjetoDTO dto) {
+    public DadosProjetoDTO adicionar(ProjetoDTO dto) {
         if (dto.getNome() == null || dto.getNome().trim().isEmpty()) {
             throw new RegraNegocioException("Nome do projeto é obrigatório");
         }
@@ -50,7 +51,16 @@ public class ProjetoServiceImpl implements ProjetoService {
         projeto.setDataInicio(dto.getDataInicio());
         projeto.setDataFim(dto.getDataFim());
         
-        return projetoRepository.save(projeto);
+        Projeto projetoSalvo = projetoRepository.save(projeto);
+        
+        return DadosProjetoDTO.builder()
+                .id(projetoSalvo.getId())
+                .nome(projetoSalvo.getNome())
+                .descricao(projetoSalvo.getDescricao())
+                .dataInicio(projetoSalvo.getDataInicio())
+                .dataFim(projetoSalvo.getDataFim())
+                .funcionarios(new ArrayList<>())
+                .build();
     }
     
     @Override

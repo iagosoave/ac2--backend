@@ -6,6 +6,9 @@ import com.ac2.ac2.dtos.SetorDTO;
 import com.ac2.ac2.models.Setor;
 import com.ac2.ac2.services.SetorService;
 import lombok.RequiredArgsConstructor;
+
+import java.util.List;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
@@ -29,5 +32,10 @@ public class SetorController {
     @GetMapping("/{idSetor}")
     public DadosSetorDTO buscarSetorPorId(@PathVariable Long idSetor) {
         return setorService.buscarSetorPorId(idSetor);
+    }
+    
+    @GetMapping
+    public List<DadosSetorDTO> listarTodos() {
+        return setorService.listarTodos();
     }
 }

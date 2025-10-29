@@ -11,6 +11,7 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.stream.Collectors;
 
 
@@ -58,5 +59,28 @@ public class SetorServiceImpl implements SetorService {
                         .collect(Collectors.toList())
                 )
                 .build();
+    }
+    
+    @Override
+    public List<DadosSetorDTO> listarTodos() {
+        return setorRepository.findAll().stream()
+                .map(s -> DadosSetorDTO.builder()
+                    .id(s.getId())
+                    .nome(s.getNome())
+                    .funcionarios(
+                        s.getFuncionarios().stream()
+                            .map(f -> DadosFuncionarioDTO.builder()
+                                .id(f.getId())
+                                .nome(f.getNome())
+                                .email(f.getEmail())
+                                .setor(SetorDTO.builder()
+                                    .id(s.getId())
+                                    .nome(s.getNome())
+                                    .build())
+                                .build())
+                            .collect(Collectors.toList())
+                    )
+                    .build())
+                .collect(Collectors.toList());
     }
 }

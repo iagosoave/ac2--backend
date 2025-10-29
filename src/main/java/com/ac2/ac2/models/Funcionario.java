@@ -1,9 +1,11 @@
 package com.ac2.ac2.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,7 +13,8 @@ import java.util.List;
 
 @Entity
 @Table(name = "funcionario")
-@Data
+@Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 public class Funcionario {
@@ -28,8 +31,10 @@ public class Funcionario {
     
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "setor_id", nullable = false)
+    @JsonIgnoreProperties({"funcionarios"})
     private Setor setor;
     
     @ManyToMany(mappedBy = "funcionarios", fetch = FetchType.LAZY)
+    @JsonIgnoreProperties({"funcionarios"})
     private List<Projeto> projetos = new ArrayList<>();
 }

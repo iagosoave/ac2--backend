@@ -1,6 +1,7 @@
 package com.ac2.ac2.models;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -26,6 +27,7 @@ public class Setor {
     private String nome;
     
     @OneToMany(mappedBy = "setor", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonIgnoreProperties({"setor", "projetos", "hibernateLazyInitializer", "handler"})
     private List<Funcionario> funcionarios = new ArrayList<>();
     
     @Override

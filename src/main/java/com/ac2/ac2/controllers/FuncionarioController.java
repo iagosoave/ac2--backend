@@ -3,7 +3,6 @@ package com.ac2.ac2.controllers;
 
 import com.ac2.ac2.dtos.DadosProjetoDTO;
 import com.ac2.ac2.dtos.FuncionarioDTO;
-import com.ac2.ac2.models.Funcionario;
 import com.ac2.ac2.services.FuncionarioService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -23,10 +22,14 @@ public class FuncionarioController {
   
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public Funcionario adicionar(@RequestBody FuncionarioDTO dto) {
+    public FuncionarioDTO adicionar(@RequestBody FuncionarioDTO dto) {
         return funcionarioService.adicionar(dto);
     }
     
+    @GetMapping
+    public List<FuncionarioDTO> listarTodos() {
+        return funcionarioService.listarTodos();
+    }
    
     @GetMapping("/{idFuncionario}/projetos")
     public List<DadosProjetoDTO> buscarProjetos(@PathVariable Long idFuncionario) {

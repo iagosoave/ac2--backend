@@ -1,9 +1,11 @@
 package com.ac2.ac2.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -12,7 +14,8 @@ import java.util.List;
 
 @Entity
 @Table(name = "projeto")
-@Data
+@Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 public class Projeto {
@@ -39,5 +42,6 @@ public class Projeto {
         joinColumns = @JoinColumn(name = "projeto_id"),
         inverseJoinColumns = @JoinColumn(name = "funcionario_id")
     )
+    @JsonIgnoreProperties({"projetos", "setor"})
     private List<Funcionario> funcionarios = new ArrayList<>();
 }
