@@ -53,6 +53,7 @@ public class ProjetoServiceImpl implements ProjetoService {
         
         Projeto projetoSalvo = projetoRepository.save(projeto);
         
+        // Retornar DTO
         return DadosProjetoDTO.builder()
                 .id(projetoSalvo.getId())
                 .nome(projetoSalvo.getNome())
@@ -82,7 +83,6 @@ public class ProjetoServiceImpl implements ProjetoService {
                         .map(f -> DadosFuncionarioDTO.builder()
                             .id(f.getId())
                             .nome(f.getNome())
-                            .email(f.getEmail())
                             .setor(SetorDTO.builder()
                                 .id(f.getSetor().getId())
                                 .nome(f.getSetor().getNome())
@@ -124,7 +124,6 @@ public class ProjetoServiceImpl implements ProjetoService {
                             .map(f -> DadosFuncionarioDTO.builder()
                                 .id(f.getId())
                                 .nome(f.getNome())
-                                .email(f.getEmail())
                                 .setor(SetorDTO.builder()
                                     .id(f.getSetor().getId())
                                     .nome(f.getSetor().getNome())

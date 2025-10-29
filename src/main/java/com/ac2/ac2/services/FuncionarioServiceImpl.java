@@ -32,10 +32,6 @@ public class FuncionarioServiceImpl implements FuncionarioService {
             throw new RegraNegocioException("Nome do funcionário é obrigatório");
         }
         
-        if (dto.getEmail() == null || dto.getEmail().trim().isEmpty()) {
-            throw new RegraNegocioException("Email do funcionário é obrigatório");
-        }
-        
         if (dto.getSetorId() == null) {
             throw new RegraNegocioException("Setor é obrigatório");
         }
@@ -45,21 +41,19 @@ public class FuncionarioServiceImpl implements FuncionarioService {
         
         Funcionario funcionario = new Funcionario();
         funcionario.setNome(dto.getNome());
-        funcionario.setEmail(dto.getEmail());
         funcionario.setSetor(setor);
         
         Funcionario funcionarioSalvo = funcionarioRepository.save(funcionario);
         
+        // Retornar DTO ao invés da entidade para evitar problemas de serialização
         FuncionarioDTO response = new FuncionarioDTO();
         response.setId(funcionarioSalvo.getId());
         response.setNome(funcionarioSalvo.getNome());
-        response.setEmail(funcionarioSalvo.getEmail());
         response.setSetorId(funcionarioSalvo.getSetor().getId());
         
         return response;
     }
     
-    // NOVO: Implementação do método listarTodos
     @Override
     public List<FuncionarioDTO> listarTodos() {
         return funcionarioRepository.findAll().stream()
@@ -67,7 +61,6 @@ public class FuncionarioServiceImpl implements FuncionarioService {
                     FuncionarioDTO dto = new FuncionarioDTO();
                     dto.setId(f.getId());
                     dto.setNome(f.getNome());
-                    dto.setEmail(f.getEmail());
                     dto.setSetorId(f.getSetor().getId());
                     return dto;
                 })
@@ -94,7 +87,6 @@ public class FuncionarioServiceImpl implements FuncionarioService {
                             .map(f -> DadosFuncionarioDTO.builder()
                                 .id(f.getId())
                                 .nome(f.getNome())
-                                .email(f.getEmail())
                                 .setor(SetorDTO.builder()
                                     .id(f.getSetor().getId())
                                     .nome(f.getSetor().getNome())

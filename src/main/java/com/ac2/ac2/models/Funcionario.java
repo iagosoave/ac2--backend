@@ -26,9 +26,6 @@ public class Funcionario {
     @Column(length = 150, nullable = false)
     private String nome;
     
-    @Column(length = 150, nullable = false, unique = true)
-    private String email;
-    
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "setor_id", nullable = false)
     @JsonIgnoreProperties({"funcionarios"})

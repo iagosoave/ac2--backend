@@ -1,6 +1,5 @@
 package com.ac2.ac2.services;
 
-
 import com.ac2.ac2.dtos.DadosFuncionarioDTO;
 import com.ac2.ac2.dtos.DadosSetorDTO;
 import com.ac2.ac2.dtos.SetorDTO;
@@ -14,7 +13,6 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.stream.Collectors;
 
-
 @Service
 @RequiredArgsConstructor
 public class SetorServiceImpl implements SetorService {
@@ -23,7 +21,7 @@ public class SetorServiceImpl implements SetorService {
     
     @Override
     @Transactional
-    public Setor adicionar(SetorDTO dto) {
+    public SetorDTO adicionar(SetorDTO dto) {
         if (dto.getNome() == null || dto.getNome().trim().isEmpty()) {
             throw new RegraNegocioException("Nome do setor é obrigatório");
         }
@@ -31,7 +29,13 @@ public class SetorServiceImpl implements SetorService {
         Setor setor = new Setor();
         setor.setNome(dto.getNome());
         
-        return setorRepository.save(setor);
+        Setor setorSalvo = setorRepository.save(setor);
+        
+        SetorDTO response = new SetorDTO();
+        response.setId(setorSalvo.getId());
+        response.setNome(setorSalvo.getNome());
+        
+        return response;
     }
     
     @Override
@@ -50,7 +54,6 @@ public class SetorServiceImpl implements SetorService {
                         .map(f -> DadosFuncionarioDTO.builder()
                             .id(f.getId())
                             .nome(f.getNome())
-                            .email(f.getEmail())
                             .setor(SetorDTO.builder()
                                 .id(setor.getId())
                                 .nome(setor.getNome())
@@ -62,25 +65,14 @@ public class SetorServiceImpl implements SetorService {
     }
     
     @Override
-    public List<DadosSetorDTO> listarTodos() {
+    public List<SetorDTO> listarTodos() {
         return setorRepository.findAll().stream()
-                .map(s -> DadosSetorDTO.builder()
-                    .id(s.getId())
-                    .nome(s.getNome())
-                    .funcionarios(
-                        s.getFuncionarios().stream()
-                            .map(f -> DadosFuncionarioDTO.builder()
-                                .id(f.getId())
-                                .nome(f.getNome())
-                                .email(f.getEmail())
-                                .setor(SetorDTO.builder()
-                                    .id(s.getId())
-                                    .nome(s.getNome())
-                                    .build())
-                                .build())
-                            .collect(Collectors.toList())
-                    )
-                    .build())
+                .map(s -> {
+                    SetorDTO dto = new SetorDTO();
+                    dto.setId(s.getId());
+                    dto.setNome(s.getNome());
+                    return dto;
+                })
                 .collect(Collectors.toList());
     }
 }

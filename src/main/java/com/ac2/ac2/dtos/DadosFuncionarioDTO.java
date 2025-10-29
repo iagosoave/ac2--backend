@@ -14,6 +14,5 @@ import lombok.NoArgsConstructor;
 public class DadosFuncionarioDTO {
     private Long id;
     private String nome;
-    private String email;
     private SetorDTO setor;
 }
