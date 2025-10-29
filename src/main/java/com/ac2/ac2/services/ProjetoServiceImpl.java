@@ -53,7 +53,6 @@ public class ProjetoServiceImpl implements ProjetoService {
         
         Projeto projetoSalvo = projetoRepository.save(projeto);
         
-        // Retornar DTO
         return DadosProjetoDTO.builder()
                 .id(projetoSalvo.getId())
                 .nome(projetoSalvo.getNome())
